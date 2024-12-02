@@ -873,14 +873,17 @@
         }
 
         function shuffleCards() {
-            const container = document.getElementById('cardContainer');
-            const cards = Array.from(container.children).filter(card =>
-                card.getAttribute('data-page') === String(currentPage)
-            );
-            const shuffledCards = cards.sort(() => Math.random() - 0.5);
-            container.innerHTML = '';
-            shuffledCards.forEach(card => container.appendChild(card));
-        }
+    const container = document.getElementById('cardContainer');
+    const cards = Array.from(container.children).filter(card =>
+        card.getAttribute('data-page') === String(currentPage)
+    );
+
+    // Shuffle the cards
+    const shuffledCards = cards.sort(() => Math.random() - 0.5);
+
+    // Remove the existing cards and append the shuffled ones
+    shuffledCards.forEach(card => container.appendChild(card));
+}
 
         document.addEventListener('DOMContentLoaded', () => showPage(1));
     </script>
