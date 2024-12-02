@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felfordítható Kártyák</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            position: absolute;
+            top: 10px;
+            text-align: center;
+            font-size: 36px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap; /* Tördelés a sorok között */
+            justify-content: center; /* A kártyák középre igazítása vízszintesen */
+            align-items: center; /* A kártyák középre igazítása függőlegesen */
+            gap: 15px;
+            max-width: 1200px; /* Maximális szélesség */
+            margin-bottom: 20px;
+        }
+
+        .card {
+            width: 112.5px; /* Az eredeti szélesség 75%-a */
+            height: 150px; /* Az eredeti magasság 75%-a */
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card-front img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .card-back {
+            background-color: #2e2e2e;
+            color: #fff;
+            transform: rotateY(180deg);
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .card-back h3 {
+            margin: 0;
+        }
+
+        .navigation {
+            position: absolute;
+            top: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 24px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .navigation:hover {
+            background-color: #0056b3;
+        }
+
+        .navigation.left {
+            left: 20px;
+        }
+
+        .navigation.right {
+            right: 20px;
+        }
+
+        .shuffle-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .shuffle-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body id="body">
+    <div class="header" id="headerText">Szétválasztó műszerek</div>
+    <button class="navigation left" onclick="prevPage()">←</button>
+    <button class="navigation right" onclick="nextPage()">→</button>
+
+    <div class="card-container" id="cardContainer">
+        <!-- Példa kártyák -->
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/szike.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Szike</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/amputáló kés.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Amputáló kés</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/egyenes-tompa.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Egyenes pengéjű, tompa-tompa hegyű olló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/egyenes-hegyes-tompa.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Egyenes pengéjű, hegyes-tompa hegyű olló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/egyenes-hegyes.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Egyenes pengéjű, hegyes-hegyes hegyű olló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/hajlított-tompa.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hajlított pengéjű, tompa-tompa hegyű olló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/hajlított-hegyes-tompa.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hajlított pengéjű, hegyes-tompa hegyű olló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/hajlított-hegyes.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hajlított pengéjű, hegyes-hegyes hegyű olló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Lister-féle kötszerolló.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Lister-féle kötszerolló</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Pean-preparáló érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Pean-preparáló érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/hasi Pean-preparáló érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hasi Pean-preparáló érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Moszkító.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Moszkító</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/monopoláris elektrokauter.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Monopoláris elektrokauter</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/bipoláris elektrokauter.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Bipoláris elektrokauter</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/disszektor.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Disszektor</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/fűrészek.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Fűrészek</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="1">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/raspatórium.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Raspatórium</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Anatómiás csipesz.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Anatómiás (tompa hegyű) csipesz</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Horgas csipesz.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Horgas (sebészi) csipesz</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Szemészeti csipesz.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Szemészeti (hegyes) csipesz</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Gyűrűs csipesz.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Gyűrűs csipesz</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Fogászati csipesz.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Fogászeti csipesz</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Schaedel-féle (cserebogár) és Backhaus lepedőfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Schaedel-féle (cserebogár) és Backhaus lepedőfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Kocher traumatikus érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Kocher traumatikus érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Lumnitzer traumatikus érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Lumnitzer traumatikus érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Bulldog atraumatikus érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Bulldog atraumatikus érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Blalock atraumatikus érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Blalock atraumatikus érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Satinsky atraumatikus érfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Satinsky atraumatikus érfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Mikulitcz-féle peritoneum fogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Mikulitcz-féle peritoneum fogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Guyon féle vesekocsány fogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Guyon féle vesekocsány fogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Mathieu-féle tűfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Mathieu-féle tűfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Hegar-féle tűfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hegar-féle tűfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/DeBakey tűfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>DeBakey tűfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Allis (tüdő) fogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Allis (tüdő) fogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Gyűrűs epehólyag-fogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Gyűrűs epehólyag-fogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Babcock (epehólyag) fogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Babcock (epehólyag) fogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Bélfogó (klammer).jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Bélfogó (klammer)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Magfogó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Magfogó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="2">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Nyeles törlő.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Nyeles törlő</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="3">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Deshamp-féle ligatúra tű és vájt Payr szonda.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Deshamp-féle ligatúra tű és vájt Payr szonda</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="3">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Argon beam coagulator (ABC).jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Argon beam coagulator (ABC)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Sebhorog.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Sebhorog</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Horgas-kosaras kampó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Horgas-kosaras kampó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Roux-kampó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Roux-kampó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Francia kampó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Francia kampó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Hasűri lapoc.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hasűri lapoc</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Hasfali lapoc.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hasfali lapoc</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Hólyaglapoc.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Hólyaglapoc</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Legue lapoc.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Legueu lapoc</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Weilander-féle önfeltáró.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Weilander-féle önfeltáró</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Gosset-féle feltáró.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Gosset-féle feltáró</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Collin feltáró.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Collin feltáró</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="4">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Finochietto feltáró.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Finochietto feltáró</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Petz varrógép.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Petz varrógép</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Egyenes bélvarrógép.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Egyenes bélvarrógép</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Kapcsok.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Kapcsok</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Michel-féle kapcsok.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Michel-féle kapcsok</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Öntapadós csíkok.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Öntapadós csíkok</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Szövetragasztók.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Szövet-ragasztók</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="5">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Varróanyagok.png" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Varró-anyagok</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Volkmann kanál.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Volkmann kanál</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Payr zúzó.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Payr zúzó</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Gombos szonda.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Gombos szonda</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Csontsebészeti műszerek.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Csont-sebészeti műszerek</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Szívórendszer.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Szívó-rendszer</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Képerősítő.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Képerősítő</h3>
+                </div>
+            </div>
+        </div>
+        <div class="card" data-page="6">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="Eszközök képek/Protézisek,implantátumok.jpg" alt="Szike">
+                </div>
+                <div class="card-back">
+                    <h3>Protézisek, implantátum</h3>
+                </div>
+            </div>
+        </div>
+        
+        <!-- További kártyák -->
+    </div>
+
+    <button class="shuffle-button" onclick="shuffleCards()">Keverés</button>
+
+    <script>
+        let currentPage = 1;
+
+        const pages = {
+            1: {
+                backgroundImage: 'url("háttér/aga.jpg")',
+                title: 'Szétválasztó műszerek'
+            },
+            2: {
+                backgroundImage: 'url("háttér/nur.jpg")',
+                title: 'Fogóműszerek'
+            },
+            3: {
+                backgroundImage: 'url("háttér/geo.jpg")',
+                title: 'Vérzés csillapítására használt műszerek'
+            },
+            4: {
+                backgroundImage: 'url("háttér/doc.jpg")',
+                title: 'Szövetszéttartó eszközök'
+            },
+            5: {
+                backgroundImage: 'url("háttér/top.jpg")',
+                title: 'Szövetegyesítő eszközök és anyagok'
+            },
+            6: {
+                backgroundImage: 'url("háttér/ord.jpg")',
+                title: 'Speciális eszközök'
+            }
+        };
+
+        function showPage(pageNumber) {
+            currentPage = pageNumber;
+            const cards = document.querySelectorAll('.card');
+            const body = document.getElementById('body');
+            const headerText = document.getElementById('headerText');
+
+            body.style.backgroundImage = pages[pageNumber].backgroundImage;
+            headerText.textContent = pages[pageNumber].title;
+
+            cards.forEach(card => {
+                card.style.display = card.getAttribute('data-page') === String(pageNumber) ? 'block' : 'none';
+            });
+        }
+
+        function nextPage() {
+            const totalPages = 6;
+            currentPage = currentPage < totalPages ? currentPage + 1 : 1;
+            showPage(currentPage);
+        }
+
+        function prevPage() {
+            const totalPages = 6;
+            currentPage = currentPage > 1 ? currentPage - 1 : totalPages;
+            showPage(currentPage);
+        }
+
+        function shuffleCards() {
+            const container = document.getElementById('cardContainer');
+            const cards = Array.from(container.children).filter(card =>
+                card.getAttribute('data-page') === String(currentPage)
+            );
+            const shuffledCards = cards.sort(() => Math.random() - 0.5);
+            container.innerHTML = '';
+            shuffledCards.forEach(card => container.appendChild(card));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => showPage(1));
+    </script>
+</body>
+</html>
